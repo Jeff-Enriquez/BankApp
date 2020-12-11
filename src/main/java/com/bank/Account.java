@@ -1,5 +1,7 @@
 package com.bank;
 
+import java.util.regex.*;
+
 public class Account {
 	public Integer accountNumber;
 	public String name;
@@ -16,18 +18,13 @@ public class Account {
 	static boolean isNameValid(String name) {
 		final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 		if(name.length() > 50) {
-			System.out.println("Error: name must be less than 50 characters.");
+			System.out.println(ANSI.RED + "Error: name must be less than 50 characters." + ANSI.RESET);
 			return false;
 		}
-		
-		String[] characters = name.toLowerCase().split("");
-		 
-        for (String character : characters) {
-            if(!ALPHABET.contains(character)) {
-            	System.out.println("Error: name must only include alphabetic characters.");
-            	return false;
-            }
-        }
+		if(!Pattern.matches("\\w+", name)) {
+			System.out.println(ANSI.RED + "Error: name must only include alphabetic characters." + ANSI.RESET);
+			return false;
+		}
 		return true;
 	}
 	
@@ -35,14 +32,14 @@ public class Account {
 		final String NUMBERS = "0123456789";
 		String[] numbers = SSN.split("-");
 		if(numbers.length != 3 || numbers[0].length() != 3 || numbers[1].length() != 2 || numbers[2].length() != 4) {
-			System.out.println("Error: SSN must follow this pattern -> XXX-XX-XXXX");
+			System.out.println(ANSI.RED + "Error: SSN must follow this pattern -> XXX-XX-XXXX" + ANSI.RESET);
 			return false;
 		}
 		for(int i = 0; i < numbers.length; i++) {
 			String[] nums = numbers[i].split("");
 			for(int j = 0; j < nums.length; j++) {
 				if(!NUMBERS.contains(nums[j])) {
-					System.out.println("Error: SSN must only contain numbers and '-'");
+					System.out.println(ANSI.RED + "Error: SSN must only contain numbers and '-'" + ANSI.RESET);
 					return false;
 				}
 			}
@@ -51,22 +48,20 @@ public class Account {
 	}
 	
 	static boolean isPasswordValid(String password) {
-		final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-		final String NUMBERS = "0123456789";
-		final String SPECIAL = "`!@#$%^&*()_+~-=[]{}|\\:\";',./<>?";
 		if(password.length() < 6) {
-			System.out.println("Error: password must contain at least 6 characters");
+			System.out.println(ANSI.RED + "Error: password must contain at least 6 characters" + ANSI.RESET);
 			return false;
-		} else if(!password.contains(ALPHABET)) {
-			System.out.println("Error: password must contain at least 1 lowercase character");
+		} else if(!Pattern.matches(".*[a-z]+.*", password)) {
+			System.out.println(ANSI.RED + "Error: password must contain at least 1 lowercase character" + ANSI.RESET);
 			return false;
-		} else if(!password.contains(ALPHABET.toUpperCase())) {
-			System.out.println("Error: password must contain at least 1 uppercase character");
+		} else if(!Pattern.matches(".*[A-Z]+.*", password)) {
+			System.out.println(ANSI.RED + "Error: password must contain at least 1 uppercase character" + ANSI.RESET);
 			return false;
-		} else if(!password.contains(NUMBERS)) {
-			System.out.println("Error: password must contain at least 1 number");
-		} else if(!password.contains(SPECIAL)) {
-			System.out.println("Error: password must contain at least 1 special character");
+		} else if(!Pattern.matches(".*\\d+.*", password)) {
+			System.out.println(ANSI.RED + "Error: password must contain at least 1 number" + ANSI.RESET);
+			return false;
+		} else if(!Pattern.matches(".*[^\\w\\s]+.*", password)) {
+			System.out.println(ANSI.RED + "Error: password must contain at least 1 special character" + ANSI.RESET);
 			return false;
 		}
 		return true;
