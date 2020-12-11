@@ -16,7 +16,6 @@ public class Account {
 	}
 	
 	static boolean isNameValid(String name) {
-		final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 		if(name.length() > 50) {
 			System.out.println(ANSI.RED + "Error: name must be less than 50 characters." + ANSI.RESET);
 			return false;
@@ -29,20 +28,14 @@ public class Account {
 	}
 	
 	static boolean isSSNValid(String SSN) {
-		final String NUMBERS = "0123456789";
 		String[] numbers = SSN.split("-");
 		if(numbers.length != 3 || numbers[0].length() != 3 || numbers[1].length() != 2 || numbers[2].length() != 4) {
 			System.out.println(ANSI.RED + "Error: SSN must follow this pattern -> XXX-XX-XXXX" + ANSI.RESET);
 			return false;
 		}
-		for(int i = 0; i < numbers.length; i++) {
-			String[] nums = numbers[i].split("");
-			for(int j = 0; j < nums.length; j++) {
-				if(!NUMBERS.contains(nums[j])) {
-					System.out.println(ANSI.RED + "Error: SSN must only contain numbers and '-'" + ANSI.RESET);
-					return false;
-				}
-			}
+		if(!Pattern.matches("\\d{3}", numbers[0]) || !Pattern.matches("\\d{2}", numbers[1]) || !Pattern.matches("\\d{4}", numbers[2])) {
+			System.out.println(ANSI.RED + "Error: SSN must only contain numbers and '-'" + ANSI.RESET);
+			return false;
 		}
 		return true;
 	}
@@ -67,16 +60,9 @@ public class Account {
 		return true;
 	}
 	
-	public void viewAccountDetails() {
+	void viewAccountDetails() {
 		System.out.println("Name: " + this.name);
 		System.out.println("Account #: " + this.accountNumber);
-	}
-	void changePassword(String password) {
-		if(password.length() <= 6) {
-			System.out.println("Password must be longer than 6 characters");
-		} else {
-			this.password = password;
-		}
 	}
 
 }

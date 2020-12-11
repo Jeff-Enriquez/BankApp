@@ -15,15 +15,24 @@ public class Main {
 			String lname = getLastName();
 			String SSN = getSSN();
 			String password = getPassword();
+			System.out.print(ANSI.PURPLE + "Your application has been submitted and will be reviewed. Thank you!" + ANSI.RESET);
 		}
 		SC.close();
 	}
 	
+	private static String getInput() {
+		String greenInput;
+		System.out.print(ANSI.GREEN);
+		greenInput = SC.nextLine();
+		System.out.print(ANSI.RESET);
+		return greenInput;
+	}
+	
 	private static String createOrLogin() {
 		System.out.println("Would you like to:");
-		System.out.println(ANSI.BLUE + "1) " + "Create Account");
-		System.out.println("2) " + "Login" + ANSI.RESET);
-		input = SC.nextLine();
+		System.out.println(ANSI.BLUE + "1) Create Account");
+		System.out.println("2) Login" + ANSI.RESET);
+		input = getInput();
 		input = input.toLowerCase();
 		if(input.equals("create account") || input.equals("1")) {
 			return "create account";
@@ -38,7 +47,7 @@ public class Main {
 	private static String getFirstName() {
 		do {				
 			System.out.print("Enter your first name: ");
-			input = SC.nextLine();
+			input = getInput();
 		} while(!Account.isNameValid(input));
 		return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
 	}
@@ -46,7 +55,7 @@ public class Main {
 	private static String getLastName() {
 		do {				
 			System.out.print("Enter your last name: ");
-			input = SC.nextLine();
+			input = getInput();
 		} while(!Account.isNameValid(input));
 		return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
 	}
@@ -54,7 +63,7 @@ public class Main {
 	private static String getSSN() {
 		do {				
 			System.out.print("Enter your SSN: ");
-			input = SC.nextLine();
+			input = getInput();
 		} while(!Account.isSSNValid(input));
 		return input;
 	}
@@ -63,10 +72,10 @@ public class Main {
 		String password;
 		do {
 			System.out.print("Enter a password: ");
-			input = SC.nextLine();
+			input = getInput();
 		} while(!Account.isPasswordValid(input));
 		System.out.print("Confirm password: ");
-		password = SC.nextLine();
+		password = getInput();
 		while(!password.equals(input)) {
 			System.out.println(ANSI.RED + "Error: passwords do not match" + ANSI.RESET);
 			password = getPassword();
