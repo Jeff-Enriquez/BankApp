@@ -1,6 +1,8 @@
 package com.bank;
 
-public class Account {
+import java.io.Serializable;
+
+public class Account implements Serializable {
 	public String userName;
 	public String name;
 	private String SSN;
@@ -44,6 +46,10 @@ public class Account {
 	public boolean hasFunds(Double cash, String accountNumber) {
 		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
 		return false;
+	}
+	
+	public void getInstructions() {
+		
 	}
 	
 	@Override

@@ -1,23 +1,120 @@
 package com.bank;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 public class Main {
 	private static Scanner SC = new Scanner(System.in);
 	private static String input = "";
+	private static Database database;
+	public static String FILE_NAME = "Database.txt";
+	static {
+		deserialization();
+	}
 	
 	public static void main(String[] args) {
-		input = createOrLogin();
-		if(input.equals("login")) {
-			
-		} else {
-			String fname = getFirstName();
-			String lname = getLastName();
-			String SSN = getSSN();
-			String password = getPassword();
-			System.out.print(ANSI.PURPLE + "Your application has been submitted and will be reviewed. Thank you!" + ANSI.RESET);
+		while(!input.equals("EXIT")) {			
+			input = createOrLogin();
+			if(input.equals("login")) {
+				login();
+				if(database.currentUser.getAccountType().equals("Admin")) {
+					while(!input.equals("LOG OUT")) {						
+						database.currentUser.getInstructions();
+						input = getInput();
+						if(input.equals("1")) {
+							approveOrDenyApplication();
+						} else if(input.equals("2")) {
+							
+						} else if(input.equals("3")) {
+							
+						} else {
+							System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
+						}
+						System.out.println("Type 'LOG OUT' to log out or press 'enter' to continue.");
+						input = getInput();
+					}
+				} else if(database.currentUser.getAccountType().equals("Customer")) {
+					System.out.println("SUCCESS!!!");
+				} 
+			} else {
+				String userName = getUserName();
+				String fname = getFirstName();
+				String lname = getLastName();
+				String SSN = getSSN();
+				String password = getPassword();
+				Customer customer = new Customer(userName, fname + " " + lname, SSN, password);
+				while(!database.requestAccount(customer)) {
+					customer.userName = getUserName();
+				}
+			}
+			System.out.println("Type 'EXIT' to exit the application or press 'enter' to continue.");
+			input = getInput();
 		}
+		serialization();
 		SC.close();
+	}
+	
+	private static void deserialization() {
+		try {
+            FileInputStream file = new FileInputStream(FILE_NAME); 
+            ObjectInputStream in = new ObjectInputStream(file);
+            database = (Database)in.readObject(); 
+            in.close(); 
+            file.close(); 
+            System.out.println(ANSI.CYAN + "Database has been loaded" + ANSI.RESET); 
+        } catch(IOException ex) { 
+            System.out.println("IOException is caught"); 
+        } catch(ClassNotFoundException ex) { 
+            System.out.println("ClassNotFoundException is caught"); 
+        }
+	}
+	
+	private static void serialization() {
+		try {
+			FileOutputStream file = new FileOutputStream(FILE_NAME); 
+			ObjectOutputStream out = new ObjectOutputStream(file); 
+            out.writeObject(database); 
+            System.out.println(ANSI.CYAN + "Database has been saved" + ANSI.RESET); 
+            out.close(); 
+            file.close(); 
+        } catch(IOException ex) { 
+            System.out.println("IOException is caught"); 
+        }
+	}
+	
+	private static void approveOrDenyApplication() {
+		input = "";					
+		if(database.isRequest()) {			
+			System.out.println("Would you like to");
+			System.out.println(ANSI.BLUE + "1) approve or");
+			System.out.println("2) deny this request?" + ANSI.RESET);
+			input = getInput();
+			if(input.equals("1")) { 
+				database.approveRequest();
+			} else if(input.equals("2")) {
+				database.denyRequest();
+			} else {			
+				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
+				approveOrDenyApplication();
+			}
+		}
+	}
+	
+	private static void login() {
+		String userName, password;
+		System.out.print("Enter your user name: ");
+		userName = getInput();
+		System.out.print("Enter your password: ");
+		password = getInput();
+		if(!database.login(userName, password)) {
+			login();
+		}
+		
 	}
 	
 	private static String getInput() {
@@ -42,6 +139,12 @@ public class Main {
 			System.out.println(ANSI.RED + "Error: Please enter the number or phrase" + ANSI.RESET);
 			input = createOrLogin();
 		}
+		return input;
+	}
+	
+	private static String getUserName() {
+		System.out.println("Enter a user name: ");
+		input = getInput();
 		return input;
 	}
 	

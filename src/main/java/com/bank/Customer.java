@@ -11,8 +11,14 @@ public class Customer extends Account {
 	}
 	
 	public void addAccount(String accountNumber) {
-		accounts.put(accountNumber, 0.0);
-		System.out.println("You have successfully added a new account. Your new account number is: " + accountNumber);
+		this.accounts.put(accountNumber, 0.0);
+	}
+	
+	public void getAccounts() {
+		System.out.println("You have " + accounts.size() + " account(s)");
+		this.accounts.forEach((account, balance) -> {
+			System.out.println("Account: " + account + " " + "Balance: " + balance);
+		});
 	}
 	
 	public boolean deposit(Double cash, String accountNumber) {

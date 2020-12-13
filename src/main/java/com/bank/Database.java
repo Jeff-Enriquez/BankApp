@@ -2,15 +2,17 @@ package com.bank;
 
 import java.math.BigInteger;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Database extends Validate{
+public class Database implements Serializable {
 	private HashMap<String, Account> userByAccount = new HashMap<String, Account>();
 	private HashMap<String, Account> userByUserName = new HashMap<String, Account>();
 	private LinkedList<Account> accountRequests = new LinkedList<Account>();
 	public Account currentUser;
+	
 	Database(){
 		//This is so the program will always have an admin and employee
 		Admin admin = new Admin("Admin", "Admin", "000-00-0000", "admin1234");
@@ -19,7 +21,8 @@ public class Database extends Validate{
 		userByUserName.put(employee.userName, employee);
 	}
 	
-	public void login(String userName, String password) {
+	public boolean login(String userName, String password) {
+		boolean isLogin = false;
 		if(!this.userByUserName.containsKey(userName)) {
 			System.out.println(ANSI.RED + "The User Does Not Exist." + ANSI.RESET);
 		} else {
@@ -29,8 +32,10 @@ public class Database extends Validate{
 			} else {
 				this.currentUser = account;
 				System.out.println("You have successfully logged in.");
+				isLogin = true;
 			}
 		}
+		return isLogin;
 	}
 	
 	public void logout() {
@@ -52,25 +57,33 @@ public class Database extends Validate{
 		isValid = this.isUserNameValid(account.userName);
 		if(isValid) {
 			this.accountRequests.add(account);
-			System.out.println("Your request has been submitted");
+			System.out.println(ANSI.PURPLE + "Your application has been submitted and will be reviewed. Thank you!" + ANSI.RESET);
 		} else {
 			System.out.println(ANSI.RED + "Request denied because username is already taken." + ANSI.RESET);
 		}
 		return isValid;
 	}
 	
-	public void viewRequest(Account account) {
-		if(currentUser.getAccountType() == "Admin") {
-			System.out.println(this.accountRequests.peek().toString());
+	public boolean isRequest() {
+		boolean isRequest = false;
+		if(currentUser.getAccountType().equals("Admin")) {
+			if(this.accountRequests.isEmpty()) {
+				System.out.println("There are no applications pending.");
+			} else {				
+				System.out.println("There are currently " + this.accountRequests.size() + " applications pending. The current pending application is: ");
+				System.out.println(this.accountRequests.peek().toString());
+				isRequest = true;
+			}
 		} else {
 			System.out.println(ANSI.RED + "Permission Error: you must be admin to do this." + ANSI.RESET);
 			System.out.println(ANSI.RED + "You are currently signed in as: " + currentUser.getAccountType() + ANSI.RESET);
 		}
+		return isRequest;
 	}
 	
-	public void approveRequest(Account account) {
-		if(currentUser.getAccountType() == "Admin") {
-			if(accountRequests.isEmpty()) {
+	public void approveRequest() {
+		if(currentUser.getAccountType().equals("Admin")) {
+			if(this.accountRequests.isEmpty()) {
 				System.out.println(ANSI.YELLOW + "Error: There are no requests to be approved." + ANSI.RESET);
 			} else {
 				Account approvedAccount = this.accountRequests.pop();
@@ -81,12 +94,28 @@ public class Database extends Validate{
 			}
 		} else {
 			System.out.println(ANSI.RED + "Permission Error: you must be admin to do this." + ANSI.RESET);
-			System.out.println(ANSI.RED + "You are currently signed in as: " + account.getAccountType() + ANSI.RESET);
+			System.out.println(ANSI.RED + "You are currently signed in as: " + currentUser.getAccountType() + ANSI.RESET);
+		}
+	}
+	
+	public void denyRequest() {
+		if(currentUser.getAccountType().equals("Admin")) {
+			if(this.accountRequests.isEmpty()) {
+				System.out.println(ANSI.YELLOW + "Error: There are no requests to be denied." + ANSI.RESET);
+			} else {
+				Account approvedAccount = this.accountRequests.pop();
+				System.out.println(ANSI.BLUE_BACKGROUND + "The account for " + 
+						ANSI.WHITE + approvedAccount.toString() + ANSI.BLACK +
+						" has been denied." + ANSI.RESET);
+			}
+		} else {
+			System.out.println(ANSI.RED + "Permission Error: you must be admin to do this." + ANSI.RESET);
+			System.out.println(ANSI.RED + "You are currently signed in as: " + currentUser.getAccountType() + ANSI.RESET);
 		}
 	}
 	
 	private void addUser(Account account) {
-		if(account.getAccountType() == "Customer") {
+		if(account.getAccountType().equals("Customer")) {
 			String accountNumber = this.getNewAccountNumber();
 			account.addAccount(accountNumber);
 			userByAccount.put(accountNumber, account);
