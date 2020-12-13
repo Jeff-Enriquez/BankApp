@@ -35,20 +35,21 @@ public class Main {
 		input = getInput();
 		input = input.toLowerCase();
 		if(input.equals("create account") || input.equals("1")) {
-			return "create account";
+			input = "create account";
 		} else if(input.equals("login") || input.equals("2")) {
-			return "login";
+			input = "login";
 		} else {
 			System.out.println(ANSI.RED + "Error: Please enter the number or phrase" + ANSI.RESET);
-			return createOrLogin();
+			input = createOrLogin();
 		}
+		return input;
 	}
 	
 	private static String getFirstName() {
 		do {				
 			System.out.print("Enter your first name: ");
 			input = getInput();
-		} while(!Account.isNameValid(input));
+		} while(!Validate.isNameValid(input));
 		return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
 	}
 	
@@ -56,7 +57,7 @@ public class Main {
 		do {				
 			System.out.print("Enter your last name: ");
 			input = getInput();
-		} while(!Account.isNameValid(input));
+		} while(!Validate.isNameValid(input));
 		return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
 	}
 	
@@ -64,7 +65,7 @@ public class Main {
 		do {				
 			System.out.print("Enter your SSN: ");
 			input = getInput();
-		} while(!Account.isSSNValid(input));
+		} while(!Validate.isSSNValid(input));
 		return input;
 	}
 	
@@ -73,7 +74,7 @@ public class Main {
 		do {
 			System.out.print("Enter a password: ");
 			input = getInput();
-		} while(!Account.isPasswordValid(input));
+		} while(!Validate.isPasswordValid(input));
 		System.out.print("Confirm password: ");
 		password = getInput();
 		while(!password.equals(input)) {

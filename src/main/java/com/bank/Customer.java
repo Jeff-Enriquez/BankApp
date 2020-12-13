@@ -1,41 +1,63 @@
 package com.bank;
 
+import java.util.HashMap;
+
 public class Customer extends Account {
-	private Double balance = 0.0;
+	private HashMap<String, Double> accounts = new HashMap<String, Double>();
 	// private transaction history
 	
-	Customer(String name, Integer accountNumber, String SSN, String password){
-		super(name, accountNumber, SSN, password);
+	Customer(String userName, String name, String SSN, String password){
+		super(userName, name, SSN, password, "Customer");
 	}
 	
-	public void deposit(Double cash) {
-		if(cash <= 0) {
-			System.out.println("Error: deposit must be greater than 0");
+	public void addAccount(String accountNumber) {
+		accounts.put(accountNumber, 0.0);
+		System.out.println("You have successfully added a new account. Your new account number is: " + accountNumber);
+	}
+	
+	public boolean deposit(Double cash, String accountNumber) {
+		boolean isDeposited = false;
+		if(!this.accounts.containsKey(accountNumber)) {
+			System.out.println(ANSI.RED + "Error: The account '" + accountNumber + "' does not exist." + ANSI.RESET);
+		} else if(cash <= 0) {
+			System.out.println(ANSI.RED + "Error: deposit must be greater than 0" + ANSI.RESET);
 		} else {
-			this.balance += cash;
+			Double balance = this.accounts.get(accountNumber) + cash;
+			this.accounts.put(accountNumber, balance);
+			System.out.println("Your new account balance for '" + accountNumber + "' is: " + balance);
+			isDeposited = true;
 			// add to transaction history
 		}
+		return isDeposited;
 	}
 	
-	public void withdraw(Double cash) {
-		if(cash > this.balance) {
-			System.out.println("Insuffienct Funds: Your balance is " + this.balance);
+	public boolean withdraw(Double cash, String accountNumber) {
+		boolean isWithdrawn = false;
+		if(!this.accounts.containsKey(accountNumber)) {
+			System.out.println(ANSI.RED + "Error: The account '" + accountNumber + "' does not exist." + ANSI.RESET);
 		} else {
-			this.balance -= cash;
+			Double balance = this.accounts.get(accountNumber) + cash;
+			if(cash > balance) {
+				System.out.println(ANSI.RED + "Insufficient Funds in account " + accountNumber);
+				System.out.println(ANSI.RED + "Your withdraw must be less than your balance of: " + balance + ANSI.RESET);
+			} else {
+				balance -= cash;
+				this.accounts.put(accountNumber, balance);
+				System.out.println("Your new account balance for '" + accountNumber + "' is: " + balance);
+				isWithdrawn = true;
+			}
 			// add to transaction history
 		}
+		return isWithdrawn;
 	}
 	
-	public void transfer(Double cash, Integer accountNumber) {
-		if(cash <= 0) {
-			System.out.println("Error: transfer must be greater than 0");
+	public boolean hasFunds(Double cash, String accountNumber) {
+		boolean hasFunds = false;
+		if(!this.accounts.containsKey(accountNumber)) {
+			System.out.println(ANSI.RED + "Error: The account '" + accountNumber + "' does not exist." + ANSI.RESET);
+		} else if(cash >= this.accounts.get(accountNumber)) {
+			hasFunds = true;
 		}
-		if(cash < this.balance) {
-			System.out.println("Insuffienct Funds: Your balance is " + this.balance);
-		} 
-		// else if - check that accountNumber exists
-		// else - 
-			// remove the cash from this account
-			// add the cash to the other account
+		return hasFunds;
 	}
 }

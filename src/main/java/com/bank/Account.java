@@ -1,72 +1,55 @@
 package com.bank;
 
-import java.util.regex.*;
-
 public class Account {
-	public Integer accountNumber;
+	public String userName;
 	public String name;
 	private String SSN;
 	private String password;
+	private String accountType;
 	
-	Account(String name, Integer accountNumber, String SSN, String password){
+	Account(String userName, String name, String SSN, String password, String accountType){
+		this.userName = userName;
 		this.name = name;
-		this.accountNumber = accountNumber;
 		this.SSN = SSN;
 		this.password = password;
+		this.accountType = accountType;
 	}
 	
-	public static boolean isNameValid(String name) {
-		boolean isValid = true;
-		if(name.length() == 0) {
-			System.out.println(ANSI.RED + "Error: you must enter a name." + ANSI.RESET);
-			isValid = false;
-		}else if(name.length() > 50) {
-			System.out.println(ANSI.RED + "Error: name must be less than 50 characters." + ANSI.RESET);
-			isValid = false;
-		}else if(!Pattern.matches("[a-zA-Z]+", name)) {
-			System.out.println(ANSI.RED + "Error: name must only include alphabetic characters." + ANSI.RESET);
-			isValid = false;
-		}
-		return isValid;
+	String getAccountType() {
+		return this.accountType;
 	}
 	
-	public static boolean isSSNValid(String SSN) {
-		boolean isValid = true;
-		String[] numbers = SSN.split("-");
-		if(numbers.length != 3 || numbers[0].length() != 3 || numbers[1].length() != 2 || numbers[2].length() != 4) {
-			System.out.println(ANSI.RED + "Error: SSN must follow this pattern -> XXX-XX-XXXX" + ANSI.RESET);
-			isValid = false;
-		} else if(!Pattern.matches("\\d{3}", numbers[0]) || !Pattern.matches("\\d{2}", numbers[1]) || !Pattern.matches("\\d{4}", numbers[2])) {
-			System.out.println(ANSI.RED + "Error: SSN must only contain numbers and '-'" + ANSI.RESET);
-			isValid = false;
-		}
-		return isValid;
+	String getPassword() {
+		return this.password;
 	}
 	
-	public static boolean isPasswordValid(String password) {
-		boolean isValid = true;
-		if(password.length() < 6) {
-			System.out.println(ANSI.RED + "Error: password must contain at least 6 characters" + ANSI.RESET);
-			isValid = false;
-		} else if(!Pattern.matches(".*[a-z]+.*", password)) {
-			System.out.println(ANSI.RED + "Error: password must contain at least 1 lowercase character" + ANSI.RESET);
-			isValid = false;
-		} else if(!Pattern.matches(".*[A-Z]+.*", password)) {
-			System.out.println(ANSI.RED + "Error: password must contain at least 1 uppercase character" + ANSI.RESET);
-			isValid = false;
-		} else if(!Pattern.matches(".*\\d+.*", password)) {
-			System.out.println(ANSI.RED + "Error: password must contain at least 1 number" + ANSI.RESET);
-			isValid = false;
-		} else if(!Pattern.matches(".*[^\\w\\s]+.*", password)) {
-			System.out.println(ANSI.RED + "Error: password must contain at least 1 special character" + ANSI.RESET);
-			isValid = false;
-		}
-		return isValid;
+	String getSSN() {
+		return this.SSN;
 	}
 	
-	void viewAccountDetails() {
-		System.out.println("Name: " + this.name);
-		System.out.println("Account #: " + this.accountNumber);
+	public void addAccount(String accountNumber) {
+		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
+	}
+	
+	public boolean deposit(Double cash, String accountNumber) {
+		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
+		return false;
+	}
+	
+	public boolean withdraw(Double cash, String accountNumber) {
+		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
+		return false;
+	}
+	
+	public boolean hasFunds(Double cash, String accountNumber) {
+		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return "User Name: " + userName + "\nAccount Type: " + accountType;
 	}
 
+	
 }
