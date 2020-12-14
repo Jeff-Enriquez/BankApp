@@ -301,7 +301,7 @@ public class Database implements Serializable {
 	public void viewAllAccounts() {
 		if(currentUser.getAccountType().equals("Admin") || currentUser.getAccountType().equals("Employee")) {
 			this.userByUserName.forEach((userName, account) -> {
-				if(account.getAccountType().equals("Customer")) {					
+				if(account != null && account.getAccountType().equals("Customer")) {					
 					System.out.print(ANSI.CYAN + userName + ": " + ANSI.RESET);
 					account.printAccounts();
 				}

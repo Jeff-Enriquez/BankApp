@@ -152,7 +152,6 @@ public class Main {
 				} else {
 					System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
 				}
-				database.viewAllAccounts();
 			} else {
 				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
 			}
@@ -249,7 +248,6 @@ public class Main {
 				} else {
 					System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
 				}
-				database.viewAllAccounts();
 			} else {
 				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
 			}
