@@ -46,14 +46,12 @@ public class Account implements Serializable {
 		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
 	}
 	
-	public boolean deposit(Double cash, String accountNumber) {
+	public void deposit(Double cash, String accountNumber) {
 		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
-		return false;
 	}
 	
-	public boolean withdraw(Double cash, String accountNumber) {
+	public void withdraw(Double cash, String accountNumber) {
 		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
-		return false;
 	}
 	
 	public boolean hasFunds(Double cash, String accountNumber) {

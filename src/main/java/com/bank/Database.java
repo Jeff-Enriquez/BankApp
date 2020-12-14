@@ -7,8 +7,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import jdk.internal.org.jline.utils.Log;
+
 public class Database implements Serializable {
 	private static Database instance;
+	private static Logger logger = LogManager.getLogger(Database.class);
 	// userByAccount: you can find the user name by account number
 	private HashMap<String, String> userByAccount = new HashMap<String, String>();
 	// userByUserName: you can find the user account by user name
@@ -32,8 +38,7 @@ public class Database implements Serializable {
 		return instance;
 	}
 	
-	public boolean login(String userName, String password) {
-		boolean isLogin = false;
+	public void login(String userName, String password) {
 		if(!this.userByUserName.containsKey(userName)) {
 			System.out.println(ANSI.RED + "The User Does Not Exist." + ANSI.RESET);
 		} else {
@@ -43,10 +48,8 @@ public class Database implements Serializable {
 			} else {
 				this.currentUser = account;
 				System.out.println("You have successfully logged in.");
-				isLogin = true;
 			}
 		}
-		return isLogin;
 	}
 	
 	public void logout() {
@@ -217,11 +220,15 @@ public class Database implements Serializable {
 		if(!currentUser.getAccountType().equals("Admin")) {
 			System.out.println(ANSI.RED + "Permission Error: you must be admin to do this." + ANSI.RESET);
 			System.out.println(ANSI.RED + "You are currently signed in as: " + currentUser.getAccountType() + ANSI.RESET);
+			logger.warn("User: " + currentUser.userName + " tried to make a withdraw through the database instead of from personal account.");
 		} else {
 			if(userByAccount.containsKey(accountNum)) {				
 				String userName = userByAccount.get(accountNum);
 				Account userAccount = userByUserName.get(userName);
 				userAccount.withdraw(cash, accountNum);
+				logger.info("Admin: " + currentUser.userName + " withdrew " + cash + " from" 
+						+ "\nuser: " + userName 
+						+ "\naccount number: " + accountNum);
 			} else {
 				System.out.println(ANSI.RED + "Account number: " + accountNum + " does not exist." + ANSI.RESET);
 			}
@@ -234,12 +241,16 @@ public class Database implements Serializable {
 				String userName = userByAccount.get(accountNum);
 				Account userAccount = userByUserName.get(userName);
 				userAccount.deposit(cash, accountNum);
+				logger.info("Admin: " + currentUser.userName + " deposited " + cash + " to" 
+						+ "\nuser: " + userName 
+						+ "\naccount number: " + accountNum);
 			} else {
 				System.out.println(ANSI.RED + "Account number: " + accountNum + " does not exist." + ANSI.RESET);
 			}
 		} else {
 			System.out.println(ANSI.RED + "Permission Error: you must be admin to do this." + ANSI.RESET);
 			System.out.println(ANSI.RED + "You are currently signed in as: " + currentUser.getAccountType() + ANSI.RESET);
+			logger.warn("User: " + currentUser.userName + " tried to make a withdraw through the database instead of from personal account.");
 		}
 	}
 	
@@ -259,6 +270,9 @@ public class Database implements Serializable {
 					user1.getBalance(accountNum1);
 					user2.deposit(cash, accountNum2);
 					user2.getBalance(accountNum2);
+					logger.info("Admin: " + currentUser.userName + " transferred " + cash + " from" 
+							+ "\nuser: " + userName1 + " account number: " + accountNum1
+							+ "\nto user: " + userName2 + " account number: " + accountNum2);
 				}
 			}
 		} else if(userByAccount.containsKey(accountNum1)) {
@@ -270,6 +284,8 @@ public class Database implements Serializable {
 						userAccount2.deposit(cash, accountNum2);
 						currentUser.withdraw(cash, accountNum1);
 						currentUser.getBalance(accountNum1);
+						logger.info("User: " + currentUser.userName + " transferred " + cash + " from own account: " + accountNum1 
+								+ "\nto user: " + userName2 + " account number: " + accountNum2);
 					} else {
 						System.out.println(ANSI.YELLOW + "Error: the account you are transferring to does not exist." + ANSI.RESET);
 					}

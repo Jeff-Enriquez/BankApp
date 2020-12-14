@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 public class Customer extends Account implements Serializable  {
 	private HashMap<String, Double> accounts = new HashMap<String, Double>();
-	// private transaction history
+	private static Logger logger = LogManager.getLogger(Database.class);
 	
 	Customer(String userName, String name, String SSN, String password){
 		super(userName, name, SSN, password, "Customer");
@@ -38,8 +41,7 @@ public class Customer extends Account implements Serializable  {
 		}
 	}
 	
-	public boolean deposit(Double cash, String accountNumber) {
-		boolean isDeposited = false;
+	public void deposit(Double cash, String accountNumber) {
 		if(!this.accounts.containsKey(accountNumber)) {
 			System.out.println(ANSI.RED + "Error: The account '" + accountNumber + "' does not exist." + ANSI.RESET);
 		} else if(cash <= 0) {
@@ -47,14 +49,11 @@ public class Customer extends Account implements Serializable  {
 		} else {
 			Double balance = this.accounts.get(accountNumber) + cash;
 			this.accounts.put(accountNumber, balance);
-			isDeposited = true;
-			// add to transaction history
+			logger.info("User: " + this.userName + " deposited " + cash + " to account: " + accountNumber);
 		}
-		return isDeposited;
 	}
 	
-	public boolean withdraw(Double cash, String accountNumber) {
-		boolean isWithdrawn = false;
+	public void withdraw(Double cash, String accountNumber) {
 		if(!this.accounts.containsKey(accountNumber)) {
 			System.out.println(ANSI.RED + "Error: The account '" + accountNumber + "' does not exist." + ANSI.RESET);
 		} else {
@@ -66,11 +65,9 @@ public class Customer extends Account implements Serializable  {
 				balance -= cash;
 				this.accounts.put(accountNumber, balance);
 				System.out.println("The new account balance for '" + accountNumber + "' is: " + balance);
-				isWithdrawn = true;
+				logger.info("User: " + this.userName + " withdrew " + cash + " from account: " + accountNumber);
 			}
-			// add to transaction history
 		}
-		return isWithdrawn;
 	}
 	
 	public boolean hasFunds(Double cash, String accountNumber) {

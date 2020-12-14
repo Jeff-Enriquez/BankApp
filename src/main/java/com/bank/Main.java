@@ -21,6 +21,9 @@ public class Main {
 			input = createOrLogin();
 			if(input.equals("login")) {
 				login();
+				if(database.currentUser == null) {
+					continue;
+				}
 				if(database.currentUser.getAccountType().equals("Admin")) {
 					adminActions();
 				} else if(database.currentUser.getAccountType().equals("Customer")) {
@@ -94,6 +97,7 @@ public class Main {
 			} else {
 				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
 			}
+			serialization();
 			System.out.println("Type 'LOG OUT' to log out or press 'enter' to continue.");
 			input = getInput();
 		}
@@ -152,6 +156,7 @@ public class Main {
 			} else {
 				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
 			}
+			serialization();
 			System.out.println("Type 'LOG OUT' to log out or press 'enter' to continue.");
 			input = getInput();
 		}
@@ -248,6 +253,7 @@ public class Main {
 			} else {
 				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
 			}
+			serialization();
 			System.out.println("Type 'LOG OUT' to log out or press 'enter' to continue.");
 			input = getInput();
 		}
@@ -260,7 +266,6 @@ public class Main {
             database = (Database)in.readObject(); 
             in.close(); 
             file.close(); 
-            System.out.println(ANSI.CYAN + "Database has been loaded" + ANSI.RESET); 
         } catch(IOException ex) { 
             System.out.println("IOException is caught"); 
         } catch(ClassNotFoundException ex) { 
@@ -272,8 +277,7 @@ public class Main {
 		try {
 			FileOutputStream file = new FileOutputStream(FILE_NAME); 
 			ObjectOutputStream out = new ObjectOutputStream(file); 
-            out.writeObject(database); 
-            System.out.println(ANSI.CYAN + "Database has been saved" + ANSI.RESET); 
+            out.writeObject(database);  
             out.close(); 
             file.close(); 
         } catch(IOException ex) { 
@@ -287,10 +291,7 @@ public class Main {
 		userName = getInput();
 		System.out.print("Enter your password: ");
 		password = getInput();
-		if(!database.login(userName, password)) {
-			login();
-		}
-		
+		database.login(userName, password);
 	}
 	
 	private static String getInput() {
