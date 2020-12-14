@@ -3,7 +3,6 @@ package com.bank;
 import java.math.BigInteger;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
@@ -118,12 +117,17 @@ public class Database implements Serializable {
 	}
 	
 	private void addUser(Account account) {
-		if(account.getAccountType().equals("Customer")) {
-			String accountNumber = this.getNewAccountNumber();
-			account.addAccount(accountNumber);
-			userByAccount.put(accountNumber, account.userName);
-		} 
-		userByUserName.put(account.userName, account);
+		if(!currentUser.getAccountType().equals("Admin")) {
+			System.out.println(ANSI.RED + "Permission Error: you must be admin to do this." + ANSI.RESET);
+			System.out.println(ANSI.RED + "You are currently signed in as: " + currentUser.getAccountType() + ANSI.RESET);
+		} else {			
+			if(account.getAccountType().equals("Customer")) {
+				String accountNumber = this.getNewAccountNumber();
+				account.addAccount(accountNumber);
+				userByAccount.put(accountNumber, account.userName);
+			} 
+			userByUserName.put(account.userName, account);
+		}
 	}
 	
 	public boolean transfer(Double cash, String accountNum1, String accountNum2) {

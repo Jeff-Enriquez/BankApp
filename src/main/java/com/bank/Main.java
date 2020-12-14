@@ -60,6 +60,7 @@ public class Main {
 					accountNum = getInput();
 					System.out.print("Enter the amount you would like to withdraw: ");
 					cash = getInputTypeDouble();
+					SC.nextLine(); // this is needed to get the \n that occurs after the Double
 				} while(!database.currentUser.withdraw(cash, accountNum));
 			} else if(input.equals("3")) {
 				database.currentUser.printAccounts();
@@ -68,6 +69,7 @@ public class Main {
 					accountNum = getInput();
 					System.out.print("Enter the amount you would like to deposit: ");
 					cash = getInputTypeDouble();
+					SC.nextLine(); // this is needed to get the \n that occurs after the Double
 				} while(!database.currentUser.deposit(cash, accountNum));
 			} else if(input.equals("4")) {
 				database.currentUser.printAccounts();
@@ -79,6 +81,7 @@ public class Main {
 					accountNum2 = getInput();
 					System.out.print("Enter the amount you would like to transfer: ");
 					cash = getInputTypeDouble();
+					SC.nextLine(); // this is needed to get the \n that occurs after the Double
 				} while(!database.transfer(cash, accountNum, accountNum2));
 			} else if(input.equals("5")) {
 				database.currentUser.toString();
