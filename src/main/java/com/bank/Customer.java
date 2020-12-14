@@ -1,5 +1,6 @@
 package com.bank;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Customer extends Account {
@@ -14,7 +15,7 @@ public class Customer extends Account {
 		this.accounts.put(accountNumber, 0.0);
 	}
 	
-	public void getAccounts() {
+	public void printAccounts() {
 		System.out.println("You have " + accounts.size() + " account(s)");
 		this.accounts.forEach((account, balance) -> {
 			System.out.println("Account: " + account + " " + "Balance: " + balance);
@@ -61,9 +62,20 @@ public class Customer extends Account {
 		boolean hasFunds = false;
 		if(!this.accounts.containsKey(accountNumber)) {
 			System.out.println(ANSI.RED + "Error: The account '" + accountNumber + "' does not exist." + ANSI.RESET);
-		} else if(cash >= this.accounts.get(accountNumber)) {
+		} else if (cash > this.accounts.get(accountNumber)) {
+			System.out.println(ANSI.RED + "Insufficient Funds in account " + accountNumber);
+		} else {
 			hasFunds = true;
 		}
 		return hasFunds;
+	}
+	
+	public void getInstructions() {
+		System.out.println("Welcome " + this.userName + " would you like to: ");
+		System.out.println(ANSI.BLUE + "1) Apply for join account.");
+		System.out.println("2) Withdraw");
+		System.out.println("3) Deposit");
+		System.out.println("4) Transfer");
+		System.out.println("5) View Account Info" + ANSI.RESET);
 	}
 }

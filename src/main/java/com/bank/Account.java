@@ -1,6 +1,7 @@
 package com.bank;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Account implements Serializable {
 	public String userName;
@@ -27,6 +28,10 @@ public class Account implements Serializable {
 	
 	String getSSN() {
 		return this.SSN;
+	}
+	
+	public void printAccounts() {
+		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
 	}
 	
 	public void addAccount(String accountNumber) {

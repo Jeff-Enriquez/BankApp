@@ -23,23 +23,9 @@ public class Main {
 			if(input.equals("login")) {
 				login();
 				if(database.currentUser.getAccountType().equals("Admin")) {
-					while(!input.equals("LOG OUT")) {						
-						database.currentUser.getInstructions();
-						input = getInput();
-						if(input.equals("1")) {
-							approveOrDenyApplication();
-						} else if(input.equals("2")) {
-							
-						} else if(input.equals("3")) {
-							
-						} else {
-							System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
-						}
-						System.out.println("Type 'LOG OUT' to log out or press 'enter' to continue.");
-						input = getInput();
-					}
+					adminActions();
 				} else if(database.currentUser.getAccountType().equals("Customer")) {
-					System.out.println("SUCCESS!!!");
+					customerActions();
 				} 
 			} else {
 				String userName = getUserName();
@@ -59,6 +45,72 @@ public class Main {
 		SC.close();
 	}
 	
+	private static void customerActions() {
+		String accountNum;
+		Double cash;
+		while(!input.equals("LOG OUT")) {
+			database.currentUser.getInstructions();
+			input = getInput();
+			if(input.equals("1")) {
+				//apply for joint account
+			} else if(input.equals("2")) {
+				database.currentUser.printAccounts();
+				do {					
+					System.out.print("Input the account number you would like to withdraw from: ");
+					accountNum = getInput();
+					System.out.print("Enter the amount you would like to withdraw: ");
+					cash = getInputTypeDouble();
+				} while(!database.currentUser.withdraw(cash, accountNum));
+			} else if(input.equals("3")) {
+				database.currentUser.printAccounts();
+				do {					
+					System.out.print("Input the account number you would like to deposit into: ");
+					accountNum = getInput();
+					System.out.print("Enter the amount you would like to deposit: ");
+					cash = getInputTypeDouble();
+				} while(!database.currentUser.deposit(cash, accountNum));
+			} else if(input.equals("4")) {
+				database.currentUser.printAccounts();
+				String accountNum2;
+				do {					
+					System.out.print("Input the account number you would like to transfer from: ");
+					accountNum = getInput();
+					System.out.print("Input the account number you would like to transfer to: ");
+					accountNum2 = getInput();
+					System.out.print("Enter the amount you would like to transfer: ");
+					cash = getInputTypeDouble();
+				} while(!database.transfer(cash, accountNum, accountNum2));
+			} else if(input.equals("5")) {
+				database.currentUser.toString();
+				System.out.println("SSN: " + database.currentUser.getSSN());
+				System.out.println("Password: " + database.currentUser.getPassword());
+				database.currentUser.printAccounts();
+			} else {
+				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
+			}
+			System.out.println("Type 'LOG OUT' to log out or press 'enter' to continue.");
+			input = getInput();
+		}
+	}
+
+	private static void adminActions() {
+		while(!input.equals("LOG OUT")) {						
+			database.currentUser.getInstructions();
+			input = getInput();
+			if(input.equals("1")) {
+				approveOrDenyApplication();
+			} else if(input.equals("2")) {
+				
+			} else if(input.equals("3")) {
+				
+			} else {
+				System.out.println(ANSI.YELLOW + "Input was incorrect" + ANSI.RESET);
+			}
+			System.out.println("Type 'LOG OUT' to log out or press 'enter' to continue.");
+			input = getInput();
+		}
+	}
+
 	private static void deserialization() {
 		try {
             FileInputStream file = new FileInputStream(FILE_NAME); 
@@ -121,6 +173,14 @@ public class Main {
 		String greenInput;
 		System.out.print(ANSI.GREEN);
 		greenInput = SC.nextLine();
+		System.out.print(ANSI.RESET);
+		return greenInput;
+	}
+	
+	private static Double getInputTypeDouble() {
+		Double greenInput;
+		System.out.print(ANSI.GREEN);
+		greenInput = SC.nextDouble();
 		System.out.print(ANSI.RESET);
 		return greenInput;
 	}

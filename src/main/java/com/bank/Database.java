@@ -3,12 +3,15 @@ package com.bank;
 import java.math.BigInteger;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
 public class Database implements Serializable {
-	private HashMap<String, Account> userByAccount = new HashMap<String, Account>();
+	// userByAccount: you can find the user name by account number
+	private HashMap<String, String> userByAccount = new HashMap<String, String>();
+	// userByUserName: you can find the user account by user name
 	private HashMap<String, Account> userByUserName = new HashMap<String, Account>();
 	private LinkedList<Account> accountRequests = new LinkedList<Account>();
 	public Account currentUser;
@@ -118,9 +121,29 @@ public class Database implements Serializable {
 		if(account.getAccountType().equals("Customer")) {
 			String accountNumber = this.getNewAccountNumber();
 			account.addAccount(accountNumber);
-			userByAccount.put(accountNumber, account);
+			userByAccount.put(accountNumber, account.userName);
 		} 
 		userByUserName.put(account.userName, account);
+	}
+	
+	public boolean transfer(Double cash, String accountNum1, String accountNum2) {
+		boolean isTransfered = false;
+		if(currentUser.hasFunds(cash, accountNum1)) {			
+			if(userByAccount.get(accountNum1).equals(currentUser.userName)) {
+				if(userByAccount.containsKey(accountNum2)) {
+					String userName2 = userByAccount.get(accountNum2);
+					Account userAccount2 = userByUserName.get(userName2);
+					userAccount2.deposit(cash, accountNum2);
+					currentUser.withdraw(cash, accountNum1);
+					isTransfered = true;
+				} else {
+					System.out.println(ANSI.YELLOW + "Error: the account you are transferring to does not exist." + ANSI.RESET);
+				}
+			} else {
+				System.out.println(ANSI.RED + "Error: the account you are transferring from must be your own." + ANSI.RESET);
+			}
+		}
+		return isTransfered;
 	}
 
 	public void addAccount() {
@@ -128,17 +151,6 @@ public class Database implements Serializable {
 		currentUser.addAccount(accountNumber);
 	}
 	
-	public boolean deposit(Double cash, String accountNumber) {
-		return currentUser.deposit(cash, accountNumber);
-	}
-	
-	public boolean withdraw(Double cash, String accountNumber) {
-		return currentUser.withdraw(cash, accountNumber);
-	}
-	
-	public boolean hasFunds(Double cash, String accountNumber) {
-		return currentUser.hasFunds(cash, accountNumber);
-	}
 	
 	public boolean isUserNameValid(String username) {
 		boolean isValid = true;
