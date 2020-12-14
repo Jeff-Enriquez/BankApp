@@ -1,9 +1,10 @@
 package com.bank;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Customer extends Account {
+public class Customer extends Account implements Serializable  {
 	private HashMap<String, Double> accounts = new HashMap<String, Double>();
 	// private transaction history
 	
@@ -15,11 +16,26 @@ public class Customer extends Account {
 		this.accounts.put(accountNumber, 0.0);
 	}
 	
+	public void removeAccount(String accountNumber) {
+		this.accounts.remove(accountNumber);
+	}
+	
 	public void printAccounts() {
-		System.out.println("You have " + accounts.size() + " account(s)");
-		this.accounts.forEach((account, balance) -> {
-			System.out.println("Account: " + account + " " + "Balance: " + balance);
-		});
+		if(this.accounts.size() == 0) {
+			System.out.println("No Existing Accounts");
+		} else {			
+			this.accounts.forEach((account, balance) -> {
+				System.out.println("Account: " + account + " " + "Balance: " + balance);
+			});
+		}
+	}
+	
+	public void getBalance(String accountNumber) {
+		if(this.accounts.containsKey(accountNumber)) {
+			System.out.println("The account balance for '" + accountNumber + "' is: " + this.accounts.get(accountNumber));
+		} else {
+			System.out.println(ANSI.YELLOW + "The account number does not exist" + ANSI.RESET);
+		}
 	}
 	
 	public boolean deposit(Double cash, String accountNumber) {
@@ -31,7 +47,6 @@ public class Customer extends Account {
 		} else {
 			Double balance = this.accounts.get(accountNumber) + cash;
 			this.accounts.put(accountNumber, balance);
-			System.out.println("Your new account balance for '" + accountNumber + "' is: " + balance);
 			isDeposited = true;
 			// add to transaction history
 		}
@@ -43,14 +58,14 @@ public class Customer extends Account {
 		if(!this.accounts.containsKey(accountNumber)) {
 			System.out.println(ANSI.RED + "Error: The account '" + accountNumber + "' does not exist." + ANSI.RESET);
 		} else {
-			Double balance = this.accounts.get(accountNumber) + cash;
+			Double balance = this.accounts.get(accountNumber);
 			if(cash > balance) {
 				System.out.println(ANSI.RED + "Insufficient Funds in account " + accountNumber);
 				System.out.println(ANSI.RED + "Your withdraw must be less than your balance of: " + balance + ANSI.RESET);
 			} else {
 				balance -= cash;
 				this.accounts.put(accountNumber, balance);
-				System.out.println("Your new account balance for '" + accountNumber + "' is: " + balance);
+				System.out.println("The new account balance for '" + accountNumber + "' is: " + balance);
 				isWithdrawn = true;
 			}
 			// add to transaction history
@@ -68,14 +83,5 @@ public class Customer extends Account {
 			hasFunds = true;
 		}
 		return hasFunds;
-	}
-	
-	public void getInstructions() {
-		System.out.println("Welcome " + this.userName + " would you like to: ");
-		System.out.println(ANSI.BLUE + "1) Apply for join account.");
-		System.out.println("2) Withdraw");
-		System.out.println("3) Deposit");
-		System.out.println("4) Transfer");
-		System.out.println("5) View Account Info" + ANSI.RESET);
 	}
 }

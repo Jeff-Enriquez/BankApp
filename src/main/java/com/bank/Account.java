@@ -34,7 +34,15 @@ public class Account implements Serializable {
 		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
 	}
 	
+	public void removeAccount(String accountNumber) {
+		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
+	}
+	
 	public void addAccount(String accountNumber) {
+		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
+	}
+	
+	public void getBalance(String accountNumber) {
 		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
 	}
 	
@@ -51,10 +59,6 @@ public class Account implements Serializable {
 	public boolean hasFunds(Double cash, String accountNumber) {
 		System.out.println(ANSI.RED + "Not applicable for account type: " + this.accountType + ANSI.RESET);
 		return false;
-	}
-	
-	public void getInstructions() {
-		
 	}
 	
 	@Override
